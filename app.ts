@@ -55,11 +55,46 @@
 // userName='shahul'
 // if(typeof userInput==='string') userName = userInput
 
-function generateError(message: string, code: number): never {
-    throw {
-        message,
-        ErrorCode: code
-    }
-}
+// function generateError(message: string, code: number): never {
+//     throw {
+//         message,
+//         ErrorCode: code
+//     }
+// }
 
 // generateError('An Error occured', 500)
+// generateError('New Error', 858)
+
+"use strict";
+function greet(name: string, date: Date) {
+    console.log('Hello ' + name + ' today is ' + date.toDateString());
+}
+
+greet('shahul', new Date());
+
+let obj: any = { x: 0 };
+// None of the following lines of code will throw compiler errors.
+// Using `any` disables all further type checking, and it is assumed
+// you know the environment better than TypeScript.
+obj.foo();
+obj();
+obj.bar = 100;
+obj = "hello";
+const n: number = obj;
+
+
+//  function with types 
+function add(n1: number, n2: number): number {
+    return n1 + n2
+}
+
+const minus = (n1: number, n2: number): number => {
+    return n1 - n2
+}
+
+function getRandomString(): string {
+    return Math.random().toString();
+}
+
+let num = 0;
+num = add(9, 6) 

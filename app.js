@@ -1,4 +1,3 @@
-"use strict";
 // enum Role { ADMIN = 'ADMIN', USER = 'USER', READ_ONLY = 'READ_ONLY' }
 // const person
 //     // : {
@@ -41,10 +40,37 @@
 // userInput='sbnjhsjhsj'
 // userName='shahul'
 // if(typeof userInput==='string') userName = userInput
-function generateError(message, code) {
-    throw {
-        message: message,
-        ErrorCode: code
-    };
-}
+// function generateError(message: string, code: number): never {
+//     throw {
+//         message,
+//         ErrorCode: code
+//     }
+// }
 // generateError('An Error occured', 500)
+// generateError('New Error', 858)
+"use strict";
+function greet(name, date) {
+    console.log('Hello ' + name + ' today is ' + date.toDateString());
+}
+greet('shahul', new Date());
+var obj = { x: 0 };
+// None of the following lines of code will throw compiler errors.
+// Using `any` disables all further type checking, and it is assumed
+// you know the environment better than TypeScript.
+obj.foo();
+obj();
+obj.bar = 100;
+obj = "hello";
+var n = obj;
+//  function with types 
+function add(n1, n2) {
+    return n1 + n2;
+}
+var minus = function (n1, n2) {
+    return n1 - n2;
+};
+function getRandomString() {
+    return Math.random().toString();
+}
+var num = 0;
+num = add(9, 6);
