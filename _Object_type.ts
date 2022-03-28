@@ -170,3 +170,53 @@ const zoo: (Fish | Bird)[] = [getPet(), getPet(), getPet()];
 const underWater1: Fish[] = zoo.filter(isFish) // or 
 const underWater2: Fish[] = zoo.filter(isFish) as Fish[];
 
+// Discriminated unions 
+
+interface Square {
+    kind: 'square';
+    sideLength: number;
+}
+
+interface Rectangle {
+    kind: 'rectangle';
+    width: number;
+    height: number;
+}
+
+interface Circle {
+    kind: 'circle';
+    radius: number;
+}
+
+
+type Shape = Square | Rectangle | Circle;
+
+function area(s: Shape) {
+    switch (s.kind) {
+        case 'square':
+            return s.sideLength * s.sideLength;
+        case 'rectangle':
+            return s.width * s.height;
+        case 'circle':
+            return Math.PI * s.radius ** 2;
+    }
+}
+
+area({ kind: 'circle', radius: 2 });
+area({ kind: 'rectangle', width: 2, height: 3 });
+area({ kind: 'square', sideLength: 2 });
+
+// Exhaustiveness checking 
+function getArea(shape: Shape) {
+    switch (shape.kind) {
+        case 'square':
+            return shape.sideLength * shape.sideLength;
+        case 'rectangle':
+            return shape.width * shape.height;
+        case 'circle':
+            return Math.PI * shape.radius ** 2;
+        default:
+            const _exhaustiveCheck: never = shape;
+            return _exhaustiveCheck
+    }
+}
