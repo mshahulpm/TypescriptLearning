@@ -112,9 +112,90 @@ function _identity4<Type>(arg: Type): Type {
 
 let myNewIdentity: myIdentity<number> = _identity4;
 
+//  Generic classes 
+
+class GenericNumber<NumType> {
+    zeroValue: NumType;
+    add: (x: NumType, y: NumType) => NumType;
+}
+
+let myGenericNumber = new GenericNumber<number>();
+myGenericNumber.zeroValue = 0;
+myGenericNumber.add = function (x, y) { return x + y; };
+
+// Generic Constraints
+
+function loggingIdentity<Type>(arg: Type): Type {
+    console.log(arg.length)
+    return arg
+}
+
+//  the above fn is can be correctly written as 
+
+interface Lengthwise {
+    length: number;
+}
+
+function loggingIdentity2<Type extends Lengthwise>(arg: Type): Type {
+    console.log(arg.length)
+    return arg
+}
+
+loggingIdentity2(3)  // error 
+loggingIdentity2({ length: 10, value: 3 }) // no error
+
+// Using Type Parameters in Generic Constraints 
+
+function getProperty<T, K extends keyof T>(obj: T, key: K) {
+    return obj[key];
+}
+
+getProperty({ name: 'Alice', age: 12 }, 'name');
+let x = { a: 1, b: 2, c: 3, d: 4 };
+getProperty(x, 'a')
+getProperty(x, 'm') // error 
 
 
+//  Using Class Types in Generics
+function create<T>(c: { new(): T }): T {
+    return new c()
+}
 
-// We can use multiple type parameters as well. For example, a standalone version of map would look like this: 
 
-function map<Input, Output>(arr: Input[], fn: (arg: Input) => Output): C
+class bookKeeper {
+    hasMask: boolean = false;
+}
+
+class ZooKeeper {
+    nametag: string = "Mikle";
+}
+
+class Animal {
+    numLegs: number = 4;
+}
+
+class Bee extends Animal {
+    keeper: bookKeeper = new bookKeeper();
+}
+
+class Lion extends Animal {
+    keeper: ZooKeeper = new ZooKeeper();
+}
+
+function createInstants<A extends Animal>(c: new () => A): A {
+    return new c()
+}
+
+createInstants(Lion).keeper.nametag; // typechecks! 
+createInstants(Bee).keeper.hasMask; // typechecks!
+
+
+// Declaring this in a Function
+
+const user = {
+    id: 123,
+    admin: false,
+    makeAdmin: function () {
+        this.admin = true;
+    }
+}
