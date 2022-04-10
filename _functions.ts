@@ -112,16 +112,6 @@ function _identity4<Type>(arg: Type): Type {
 
 let myNewIdentity: myIdentity<number> = _identity4;
 
-//  Generic classes 
-
-class GenericNumber<NumType> {
-    zeroValue: NumType;
-    add: (x: NumType, y: NumType) => NumType;
-}
-
-let myGenericNumber = new GenericNumber<number>();
-myGenericNumber.zeroValue = 0;
-myGenericNumber.add = function (x, y) { return x + y; };
 
 // Generic Constraints
 
@@ -198,4 +188,52 @@ const user = {
     makeAdmin: function () {
         this.admin = true;
     }
+}
+
+// rest parameter 
+
+function multiplyWithFirstArg(n: number, ...m: number[]) {
+    return m.map(x => x * n)
+}
+
+var result = multiplyWithFirstArg(2, 1, 2, 3, 4, 5)
+
+var array1 = [1, 2, 3, 4, 5]
+var array2 = [6, 7, 8, 9, 10]
+array1.push(...array2)
+
+let arg = [1, 4] as const
+Math.atan2(...arg)
+
+
+// Parameter Destructuring  
+
+function sum({ a, b, c }: { a: number, b: number, c: number }) {
+    console.log(a + b + c)
+}
+
+sum({ a: 1, b: 2, c: 3 })
+
+type SUM = {
+    a: number,
+    b: number,
+    c: number
+}
+
+function sum2({ a, b, c }: SUM) {
+    console.log(a + b + c)
+}
+
+
+type voidFunc = () => void;
+
+const f1: voidFunc = () => true    // valid 
+const v1 = f1()
+
+function f2(): void {
+    return true  // error 
+}
+
+const f3 = function (): void {
+    return true // also error 
 }
