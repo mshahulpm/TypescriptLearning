@@ -358,3 +358,282 @@ class SpGreeter extends Greeter2 {
 const spg = new SpGreeter()
 spg.howdy()
 // spg.getName()  // error only accessible inside with in main or sub classes 
+
+// Exposure of protected members 
+
+class PM {
+    protected m = 10
+}
+
+class DE_PM extends PM {
+    m = 15
+}
+
+
+const de = new DE_PM()
+console.log(de.m)
+
+// Cross-hierarchy protected access 
+
+class A1 {
+    protected x: number = 1
+}
+
+class D1 extends A1 {
+    protected x: number = 5
+}
+
+
+class D2 extends A1 {
+    f1(other: D2) {
+        other.x = 10
+    }
+
+    f2(other: A1) {
+        // other.x =10   // error
+    }
+}
+
+
+// private property 
+
+class A2 {
+    private x: number = 1
+}
+
+const a2 = new A2()
+// console.log(a2.x)    // can't access private property
+
+class D3 extends A2 {
+
+    // x = 34    // error 
+
+    showX() {
+        // console.log(this.x)   // also error private property only can access with in the same class
+    }
+}
+
+
+// TypeScript does allow cross-instance private access:
+
+class AAA {
+    private x = 100
+
+    public sameAs(other: AAA) {
+        // no error 
+        return other.x === this.x
+    }
+}
+
+// Caveats 
+
+class MySafe {
+    private secretKey = 63574527
+}
+
+const s = new MySafe()
+
+//  only showing error in Ts but will print value in JS File
+// console.log(s.secretKey)
+
+//  no error no problem 
+console.log(s['secretKey'])
+
+class Dog3 {
+    // strict private 
+    #barkAmount = 1801;
+    personality = "happy";
+    constructor() { }
+
+    printPrivate() {
+        console.log(this.#barkAmount)
+    }
+
+}
+
+
+const dog3 = new Dog3()
+
+console.log(dog3.personality)
+
+dog3.printPrivate()
+//    console.log(dog3['#barkAmount'])
+
+
+// Static Members 
+
+class MyClass1 {
+
+    static x = 10
+    static printx() {
+        console.log(MyClass1.x)
+    }
+}
+
+console.log(MyClass1.x)
+MyClass1.printx()
+
+// Static members can also use the same public , protected , and private visibility modifiers:
+
+class MyClass2 {
+    private static x = 30
+}
+
+// console.log(MyClass2.x)    // error can't access private property 
+
+// Static members are also inherited
+class Base3 {
+    static greetings() {
+        return 'Hello world'
+    }
+}
+
+
+class Derived3 extends Base3 {
+    myGreetings = Derived3.greetings()
+}
+
+console.log(new Derived3().myGreetings)
+
+
+// Generic Classes 
+
+class Box_1<T>{
+    contents: T
+    constructor(value: T) {
+        this.contents = value
+    }
+}
+
+const b_1 = new Box_1('hello')
+
+console.log(b_1.contents)
+
+
+// this types 
+
+class Box_22 {
+    contents: string = ''
+    set(value: string) {
+        this.contents = value
+        return this
+    }
+}
+
+const newValue = new Box_22().set('new value')
+
+class ClearableBox extends Box_22 {
+    clear() {
+        this.contents = 'cleared'
+    }
+}
+
+const _aa = new ClearableBox()
+const _bb = _aa.set('shahul')
+console.log(_bb.contents)
+_bb.clear()
+console.log(_bb.contents)
+
+
+class Box_3 {
+    content = ''
+    sameAs(other: this) {
+        return other.content === this.content
+    }
+}
+
+// this -based type guards
+
+class FileSystemObject {
+    isFile(): this is FileRep {
+        return this instanceof FileRep
+    }
+    isDirectory(): this is Directory {
+        return this instanceof Directory
+    }
+    isNetWorked(): this is NetWorked & this {
+        return this.networked
+    }
+    constructor(public path: string, private networked: boolean) {
+
+    }
+}
+
+class FileRep extends FileSystemObject {
+    constructor(path: string, public content: string) {
+        super(path, false);
+    }
+}
+
+
+class Directory extends FileSystemObject {
+    children: FileSystemObject[] = []
+}
+
+interface NetWorked {
+    host: string
+}
+
+
+const fso: FileSystemObject = new Directory('/home/shahul', false)
+if (fso.isFile()) {
+    console.log(fso.content)
+} else if (fso.isDirectory()) {
+    console.log(fso.children)
+} else if (fso.isNetWorked()) {
+    console.log(fso.host)
+}
+
+console.log('++++++++++++++++++++++++++')
+
+class Boxx<T> {
+    value?: T
+
+    hasValue(): this is { value: T } {
+        return this.value !== undefined
+    }
+}
+
+const boxx = new Boxx()
+boxx.value = 'shahul'
+
+if (boxx.hasValue()) {
+    console.log(boxx.value)
+}
+
+// Class Expressions 
+
+const someClass = class <T>{
+    value: T
+    constructor(arg: T) {
+        this.value = arg
+    }
+}
+
+const smc = new someClass('hello world')
+console.log(smc.value)
+
+// abstract Classes and Members
+
+abstract class Base4 {
+    abstract getName(): string
+
+    printName() {
+        console.log('hello ' + this.getName())
+    }
+}
+
+// const b4 = new Base4()    // error 
+// We can't instantiate Base with new because it's abstract. Instead, we need to make a derived class and implement the abstract members:
+
+class Derived5 extends Base4 {
+    getName(): string {
+        return 'shahul'
+    }
+}
+
+
+const d5 = new Derived5()
+d5.printName()
+
+
