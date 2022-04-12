@@ -49,6 +49,17 @@ function sealed(constructor: Function) {
 
 const bgr = new BugReport('dark')
 
+class Random extends BugReport {
+
+    vote: number
+    constructor(n: number) {
+        super('helo')
+        this.vote = n
+    }
+}
+
+
+
 // Next we have an example of how to override the constructor to set new defaults.
 
 function reportableClassDecorator<T extends { new(...args: any[]): {} }>(constructor: T) {
@@ -94,3 +105,86 @@ function enumerable(value: boolean) {
         descriptor.enumerable = value;
     }
 }
+
+
+// better explanation from internet 
+
+// class decorator 
+
+const clsDecorator = (target: Function) => {
+    // do something with your class 
+}
+
+@clsDecorator
+class Rocket { }
+
+// If you want to override the properties within the class, you can return a new class that extends its constructor and set the properties.
+function addFuelToRocket(target: { new(): any }) {
+    return class extends target {
+        fuel: number = 100
+    }
+}
+
+@addFuelToRocket
+class Rocket2 {
+
+}
+
+const rock = new Rocket2()
+
+
+//  calculate execution time  method decorator
+
+const checkMinimumFuel = (fuel: number) => (
+    target: Object,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+) => {
+    const originalMethod = descriptor.value;
+    descriptor.value = function (...args: any[]) {
+        // @ts-ignore
+        if (fuel > this.fuel) {
+            console.log("Not enough fuel")
+
+        } else {
+            originalMethod.apply(this, args)
+        }
+    }
+    return descriptor
+}
+
+class Rocket4 {
+
+    fuel = 50
+
+    @checkMinimumFuel(100)
+    @measure
+    launch() {
+        const start = Date.now()
+        while (Date.now() - start < 1000) { }
+        console.log("Launching in 3... 2... 1... 🚀");
+    }
+}
+
+function measure(
+    target: Object,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+) {
+    const originalMethod = descriptor.value;
+    descriptor.value = function (...args: any[]) {
+        const start = Date.now()
+        const result = originalMethod.apply(this, args);
+        const end = Date.now();
+        console.log(`Execution time : ${end - start} ms`);
+        return result
+    }
+
+    return descriptor
+}
+
+
+
+const rocket4 = new Rocket4()
+
+rocket4.launch()
